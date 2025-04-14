@@ -1,0 +1,160 @@
+---
+title: "Experimental Bias in Observational Frequency of Rodent Weights"
+author: "Elizabeth Colvin"
+date: "Last updated: `r format(Sys.time(), '%B %d, %Y')`"
+
+output:
+  html_document
+---
+
+<!-- INSTRUCTIONS
+
+You will carry out a project in which you statistically analyze a data set to
+answer an appropriate biological question. The goal of this project is for you
+to carry out an independent application of the methods and skills you will
+learn in this class. Your work on this project will be spread out over several
+modules, beginning with Module 2.
+
+You will write your report using R Markdown, which is an extremely powerful and
+flexible system for writing reports, html pages, presentations, and other
+documents. You are free to explore R Markdown's features and use things not
+covered in this class. More information about R Markdown can be found at
+https://rmarkdown.rstudio.com/articles.html.
+
+A template for you to follow when writing your report is provided below.
+
+The dataset that you will be analyzing comes from a project studying the effects
+of rodents and ants on plant communities. It has been running for nearly 40
+years in Portal, AZ. The data you will work with is a time-series of small
+mammals. The rodents are sampled from 24 plots, with different experimental
+manipulations. More information about the dataset can be found at
+
+- https://github.com/weecology/ratdat
+- https://www.biorxiv.org/content/10.1101/332783v3
+- https://doi.org/10.6084/m9.figshare.1314459
+- https://datacarpentry.org/ecology-workshop/data.html
+
+You will not be using the full dataset. You will be using a subset of the data
+that can be accessed via the R's `ratdat` package. Using ratdat's `complete`
+dataset, write a report testing **one** of the hypotheses described below, using
+appropriate statistical tests, figures, and tables.
+
+1. Sexual dimorphism is common in the animal kingdom. How many rodent species
+   are sexually dimorphic with respect to body size?
+2. Sometimes variables of interest can be really difficult to measure. For
+   instance, it may be challenging to find a scale which can support an
+   elephant. For this reason, scientists often measure proxies instead, which
+   are variables that correlate with the variable of interest but are easier to
+   measure. By measuring the proxy, scientists can presumably test hypotheses
+   for the variable of interest. Can hindfoot length be used as a proxy for
+   weight in rodents?
+3. Sometimes experimental bias can creep into measurements for unexpected
+   reasons. For instance, who wants to measure animals in the field during
+   December when it's really cold outside? Determine if there is an effect of
+   the month on weight measurements of rodents.
+4. Body size is a prototypical example of a normally-distributed variable.
+   One may infer, then, that the hindfoot lengths of various species are also
+   normally distributed. Determine if hindfoot length is a normally-distributed
+   variable, taking into account both sex and species of captured rodents.
+5. Some plots are designed to exclude Kangaroo Rats. Determine if this worked.
+6. Species distributions can change over time. Are there any trends in the
+   proportion of different species captured over time?
+-->
+
+```{r setup, include = FALSE}
+# Setup code that will be executed but not printed
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Introduction
+
+Long-term studies on ecosystem functioning are essential for understanding the inner workings of nature and guiding the effective management of ecosystems. These studies have deepened our comprehension of species evolution and the ongoing development of ecological theories (Ernest et al., 2020). The portal project, initiated in 1977, spans over 40 years of ecological research, incorporating both long- and short-term studies focused on different taxa. Data collected by various researchers over multiple decades is likely to have some experimental bias, whether intentional or not. I expect fewer rodent weight measurements to be taken during July, August, and September, as these months experience the highest precipitation (Western Regional Climate Center, 2012), which may present challenges in fieldwork. Additionally, I anticipate the most frequent measurements occurring in May and June, when temperatures are milder, and precipitation is less common. I will use R Studio to create a graph and conduct statistical analysis to understand the relationship between the month and the frequency of rodent measurements. 
+
+## Materials and Methods
+
+The portal project is located on a 20-hectare study site northeast of Portal, AZ. The project initially began to study competition among granivores in a resource-limited system. In 1977, after establishing the site, the habitat type was identified as desert grassland and has since evolved into mixed shrubland. Rodent and plant communities have been continuously sampled since 1977, while the ant community was monitored only until 2009 (Ernest et al., 2020). The site is managed by the Bureau of Land Management (BLM) and consists of 24 plots, each measuring 50 m by 50 m, enclosed by a barbed wire fence to keep out cattle. 
+Treatments are categorized into rodent access, ant access, and resource manipulations, with each treatment also having a control state. Half of the plots have been maintained with consistent treatments focusing on rodents and ants throughout the project's duration. Additionally, a subset of plots has undergone different treatments over the years.Rodent access to the plots is controlled via 16 gates in the fence surrounding each plot. Since 1977, four rodent treatments have been implemented, including varying gate sizes (or their absence), with only specific species allowed access, while control plots have gates that allow access for all species. Monthly trapping of the necessary rodents supports the treatment groups. 
+Rodents were sampled monthly on weekends, as close to the new moon as possible. (Ernest et al., 2020) Gates related to rodent treatments are closed during trap setting in the evening and reopened the following day. Traps are set before sunset and checked at sunrise. If precipitation or temperature is unfavorable, traps will not be set to prevent cold-induced mortality. Target species are recorded, and a stake is placed where they were caught, which includes details such as species, sex, reproductive condition, weight, and hind foot length. Since 1991, individuals have been tagged with Passive Integrated Transponder (PIT) tags; prior to that, identification was based on one or two ear tags or toe clipping. 
+R Studio generated graphs and analyzed data to determine whether the month affected weight measurements. The packages utilized included "ratdat, "a comprehensive dataset from 1977 to 2002, "tidyverse" for organizing and managing the data, and "ggplot2" for creating the graphs. The data was filtered to include only rodent species and exclude any NAs in the weight column. The data was then grouped by month, and the frequency of weights taken was calculated. After graph creation, a Chi-squared test is performed to test the goodness of fit, followed by an ANOVA test to confirm the results.
+
+## Analysis and Results
+ 
+
+
+```{r include fig 1, echo=FALSE, out.width="70%", fig.cap="Figure 1: Precipition (in) throughout the year in Portal, AZ. The time frame in which the data was collected was 01/01/1914 to 03/31/1955. Measurements were taken by the Western Regional Climate Center (WRCC). The data was collected from the Portal, AZ weather station (026706). The data was collected each month."}
+knitr::include_graphics(file.path("/Users/elliecolvin/Desktop/Precip.png"))
+
+```
+```{r supporting table 1, echo = FALSE, out.width="70%", fig.cap= "Table 1: Summary of the Temperatures in Portal, AZ, AZ weather station (026706), from 01/01/1914 to 03/31/1955. The data was collected by the Western Regional Climate Center (WRCC). The data was collected each month."}
+knitr::include_graphics(file.path("/Users/elliecolvin/Desktop/Temp.png"))
+```
+
+```{r load packages}
+# Load packages
+library(ratdat) #data
+library(tidyverse) #data organizing/management
+library(ggplot2) #graphs
+library(rsconnect) #make the report viewable
+
+```
+```{r sort data}
+# Sort Data
+
+counts <- ratdat::complete %>%
+  select(month, weight, taxa) %>% # select columns that we need for analysis
+  filter(!is.na(weight), taxa == "Rodent") %>% #filter out NAs in weight and species that are not rodents
+  mutate(month = factor(month, levels = c(1:12), labels = c("Jan", "Feb", "Mar", "Apr", "May",
+                                                             "Jun", "Jul", "Aug", "Sep", "Oct",
+                                                             "Nov", "Dec"))) %>% # change 1 to 12 with month names
+group_by(month) %>% 
+  summarise(n_weights = n()) %>% # group by month and count frequency of weights taken
+  ungroup() %>% 
+  mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May",
+                                          "Jun", "Jul", "Aug", "Sep", "Oct",
+                                          "Nov","Dec"))) #keep months consistent
+
+``` 
+```{r plot} 
+ggplot(counts, aes(x = month, y = n_weights)) + #generate graph using ggplot2
+  geom_col(fill = "lightblue") + #bar graph shows distribution of weights taken
+  geom_text(aes(label = n_weights), vjust = -0.5) + #labels on graph
+  labs(
+    title = "Number of Rodent Weight Observations by Month",
+    x = "Month",
+    y = "Frequency of Weight Taken",
+    caption = "Figure 2: 
+    Rodent observations were taken from the beginning of the Portal Project in Portal, AZ, from 1977 to 2002. Averages of 
+    frequency of rodent weights measured are identified above. A Chi-square test revealed that the frequency of weights 
+    taken was not evenly distributed across months (p-value < 2.2e-16). An ANOVA test confirmed this, suggesting a seasonal 
+    or experimental influence during frequency of sampling." #detailed caption to explain the graph
+  ) +
+  theme_minimal() + #minimal theme
+  scale_x_discrete(limits = c("Jan", "Feb", "Mar", "Apr", "May",
+                              "Jun", "Jul", "Aug", "Sep", "Oct",
+                              "Nov", "Dec")) #x axis labels
+```
+```{r chi square}
+
+chi <- chisq.test(counts$n_weights, p = rep(1/12, 12)) #chi squared to test fitness
+chi
+```
+```{r anova}
+aov <- aov(n_weights ~ month, data = counts) #ANOVA to test 
+aov 
+```
+
+```
+## Discussion
+
+*Briefly summarize findings and relate them to the hypothesis given in the
+ introduction.*
+
+## Acknowledgements
+
+*Thank anyone who provided assistance.*
+
+## References
+
+Ernest, Morgan, et al. Sharing the Long-Term Portal Project Data: 37 Years of Rodent, Plant, Ant, and Weather Data, 27 June 2020, https://doi.org/10.59350/srvbf-90g46. 
+“Portal, Arizona.” PORTAL, ARIZONA - Climate Summary, 2012, wrcc.dri.edu/cgi-bin/cliMAIN.pl?az6706. 
